@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { ColorPalette } from "./color-palette";
-import { Lightbulb, Thermometer, Scale } from "lucide-react";
 
 export function SampleAnalysis() {
   const sampleColors = [
@@ -23,14 +22,6 @@ export function SampleAnalysis() {
         <CardTitle>Sample Lighting Analysis</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="aspect-video rounded-lg overflow-hidden bg-muted">
-          <img
-            src="/sample-analysis.jpg"
-            alt="Sample scene analysis"
-            className="object-cover w-full h-full"
-          />
-        </div>
-        
         <div className="space-y-2">
           <ColorPalette colors={sampleColors} className="rounded-lg overflow-hidden" />
           <p className="text-sm text-muted-foreground">
@@ -41,11 +32,8 @@ export function SampleAnalysis() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-primary">
-              <Lightbulb className="h-4 w-4" />
-              <h3 className="font-medium">Key Light</h3>
-            </div>
+          <div className="space-y-1">
+            <p className="text-sm font-medium">Key Light</p>
             <p className="text-sm text-muted-foreground">
               60 IRE intensity
               <br />
@@ -55,11 +43,8 @@ export function SampleAnalysis() {
             </p>
           </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-primary">
-              <Scale className="h-4 w-4" />
-              <h3 className="font-medium">Ratios</h3>
-            </div>
+          <div className="space-y-1">
+            <p className="text-sm font-medium">Light Ratios</p>
             <p className="text-sm text-muted-foreground">
               Key to Fill: 2:1
               <br />
@@ -67,11 +52,8 @@ export function SampleAnalysis() {
             </p>
           </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-primary">
-              <Thermometer className="h-4 w-4" />
-              <h3 className="font-medium">Color Balance</h3>
-            </div>
+          <div className="space-y-1">
+            <p className="text-sm font-medium">Color Balance</p>
             <p className="text-sm text-muted-foreground">
               Overall: Warm
               <br />
