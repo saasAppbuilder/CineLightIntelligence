@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRoute } from "wouter";
 import { AnalysisCard } from "@/components/analysis-card";
+import { ColorPalette } from "@/components/color-palette";
 import { LoadingAnalysis } from "@/components/loading-analysis";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -60,6 +61,10 @@ export default function Analysis() {
               className="object-cover w-full h-full"
             />
           </div>
+          <ColorPalette 
+            colors={(analysis.analysis as any).colorPalette} 
+            className="rounded-lg overflow-hidden"
+          />
           {analysis.referenceImageUrl && (
             <div className="aspect-video rounded-lg overflow-hidden bg-muted">
               <img

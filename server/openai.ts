@@ -9,7 +9,7 @@ if (!process.env.OPENAI_API_KEY) {
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 function generateSystemPrompt(preferences?: AnalysisPreferences): string {
-  let prompt = `You are an advanced cinematography AI specializing in lighting analysis for film and video. Analyze the image focusing on lighting setup, providing detailed measurements and characteristics. `;
+  let prompt = `You are an advanced cinematography AI specializing in lighting analysis for film and video. Analyze the image focusing on lighting setup, providing detailed measurements and characteristics. Also extract a color palette that represents the key colors in the scene. `;
 
   if (preferences?.focusAreas?.includes('technical')) {
     prompt += `Focus on technical aspects like IRE values, color temperatures, and precise ratios. `;
@@ -59,7 +59,8 @@ function generateSystemPrompt(preferences?: AnalysisPreferences): string {
   },
   "mood": "description of emotional impact",
   "cinematicReferences": ["array of relevant film lighting style references"],
-  "suggestions": ["array of technical improvement suggestions"]
+  "suggestions": ["array of technical improvement suggestions"],
+  "colorPalette": ["array of 11 hex color codes representing the scene's color distribution, from darkest to lightest"]
 }`;
 
   return prompt;

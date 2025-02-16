@@ -74,7 +74,8 @@ export const analysisResponseSchema = z.object({
   }),
   mood: z.string(),
   cinematicReferences: z.array(z.string()),
-  suggestions: z.array(z.string())
+  suggestions: z.array(z.string()),
+  colorPalette: z.array(z.string()) // Array of hex colors representing the scene's color distribution
 });
 
 export type AnalysisResponse = z.infer<typeof analysisResponseSchema>;
