@@ -2,19 +2,16 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { ImageUpload } from "@/components/image-upload";
 import { ReferenceGrid } from "@/components/reference-grid";
-import { AnalysisPreferences } from "@/components/analysis-preferences";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import type { AnalysisPreferences as AnalysisPreferencesType } from "@shared/schema";
 
 export default function Home() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [referenceImage, setReferenceImage] = useState<string | null>(null);
-  const [preferences, setPreferences] = useState<AnalysisPreferencesType | null>(null);
 
   const handleAnalyze = async () => {
     if (!selectedImage) {
@@ -29,8 +26,7 @@ export default function Home() {
     try {
       const response = await apiRequest("POST", "/api/analyze", {
         imageBase64: selectedImage,
-        referenceImageUrl: referenceImage,
-        preferences
+        referenceImageUrl: referenceImage
       });
       const result = await response.json() as { id: number };
       setLocation(`/analysis/${result.id}`);
@@ -90,7 +86,13 @@ export default function Home() {
             </div>
           </div>
 
-          <AnalysisPreferences onPreferencesChange={setPreferences} />
+          {/* To be replaced with sample analysis showcase */}
+          <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+            <h2 className="text-lg font-semibold mb-4">Sample Analysis Preview</h2>
+            <p className="text-muted-foreground">
+              Please provide a sample analysis screenshot and I'll create a showcase component to demonstrate the tool's capabilities.
+            </p>
+          </div>
         </div>
       </div>
     </div>
