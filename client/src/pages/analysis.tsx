@@ -61,10 +61,17 @@ export default function Analysis() {
               className="object-cover w-full h-full"
             />
           </div>
-          <ColorPalette 
-            colors={(analysis.analysis as any).colorPalette} 
-            className="rounded-lg overflow-hidden"
-          />
+          <div className="space-y-2">
+            <ColorPalette 
+              colors={(analysis.analysis as any).colorPalette} 
+              className="rounded-lg overflow-hidden"
+            />
+            { (analysis.analysis as any).colorAnalysis && (
+              <p className="text-sm text-muted-foreground mt-2">
+                {(analysis.analysis as any).colorAnalysis}
+              </p>
+            )}
+          </div>
           {analysis.referenceImageUrl && (
             <div className="aspect-video rounded-lg overflow-hidden bg-muted">
               <img
