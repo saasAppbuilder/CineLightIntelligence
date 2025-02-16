@@ -9,16 +9,16 @@ if (!process.env.OPENAI_API_KEY) {
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 function generateSystemPrompt(preferences?: AnalysisPreferences): string {
-  let prompt = `You are a professional cinematographer analyzing lighting setups. `;
+  let prompt = `You are an advanced cinematography AI specializing in lighting analysis for film and video. Analyze the image focusing on lighting setup, providing detailed measurements and characteristics. `;
 
   if (preferences?.focusAreas?.includes('technical')) {
-    prompt += `Focus on technical aspects like light placement, equipment choices, and exposure settings. `;
+    prompt += `Focus on technical aspects like IRE values, color temperatures, and precise ratios. `;
   }
   if (preferences?.focusAreas?.includes('emotional')) {
-    prompt += `Analyze the emotional impact of the lighting and how it supports the scene's mood. `;
+    prompt += `Analyze the emotional impact and psychological effects of the lighting choices. `;
   }
   if (preferences?.focusAreas?.includes('style')) {
-    prompt += `Compare the lighting style to established cinematographic techniques. `;
+    prompt += `Compare to established cinematographic techniques and styles. `;
   }
   if (preferences?.genre) {
     prompt += `Analyze this from a ${preferences.genre.replace('_', ' ')} perspective. `;
@@ -30,18 +30,36 @@ function generateSystemPrompt(preferences?: AnalysisPreferences): string {
   prompt += `Provide detailed analysis in the following JSON format:
 {
   "keyLight": {
-    "position": "string describing the position (e.g., 'upper left', 'center right')",
-    "intensity": number from 1-10,
-    "color": "string describing color temperature or color"
+    "position": "detailed position description",
+    "intensity": number from 0-100 representing IRE value,
+    "quality": "detailed description of softness/hardness",
+    "colorTemperature": number representing Kelvin value,
+    "height": "vertical position description",
+    "angle": "detailed angle and direction"
   },
   "fillLight": {
     "presence": boolean,
-    "intensity": number from 1-10
+    "intensity": number from 0-100 representing IRE value,
+    "quality": "detailed description of light characteristics",
+    "colorTemperature": number representing Kelvin value,
+    "position": "position relative to key light"
   },
-  "backgroundColor": "string describing the background color or tone",
-  "contrastRatio": number representing the contrast ratio,
-  "mood": "string describing the overall mood",
-  "suggestions": ["array of strings with improvement suggestions"]
+  "backgroundLight": {
+    "intensity": number from 0-100 representing IRE value,
+    "colorTemperature": number representing Kelvin value,
+    "characteristics": "detailed description of background lighting effect"
+  },
+  "ratios": {
+    "keyToFill": "ratio expressed as string (e.g., '4:1')",
+    "keyToBackground": "ratio expressed as string"
+  },
+  "colorBalance": {
+    "overall": "warm/cool/neutral/mixed",
+    "description": "detailed color harmony analysis"
+  },
+  "mood": "description of emotional impact",
+  "cinematicReferences": ["array of relevant film lighting style references"],
+  "suggestions": ["array of technical improvement suggestions"]
 }`;
 
   return prompt;
@@ -63,7 +81,7 @@ export async function analyzeLighting(
         content: [
           {
             type: "text",
-            text: "Analyze this image's lighting setup focusing on: key light position and intensity, fill light presence and intensity, background lighting, contrast ratio, overall mood, and specific suggestions for improvement. Ensure the response matches the exact JSON format specified."
+            text: "Analyze this image's lighting setup with precise technical measurements and artistic interpretation. Include IRE values, color temperatures, ratios, and specific cinematic references. Ensure the response matches the exact JSON format specified."
           },
           {
             type: "image_url",

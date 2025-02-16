@@ -46,16 +46,34 @@ export type Analysis = typeof analyses.$inferSelect;
 export const analysisResponseSchema = z.object({
   keyLight: z.object({
     position: z.string(),
-    intensity: z.number(),
-    color: z.string()
+    intensity: z.number(), // IRE value 0-100
+    quality: z.string(), // soft/hard description
+    colorTemperature: z.number(), // Kelvin value
+    height: z.string(), // vertical position
+    angle: z.string() // directional information
   }),
   fillLight: z.object({
     presence: z.boolean(),
-    intensity: z.number()
+    intensity: z.number(), // IRE value 0-100
+    quality: z.string(),
+    colorTemperature: z.number(),
+    position: z.string()
   }),
-  backgroundColor: z.string(),
-  contrastRatio: z.number(),
+  backgroundLight: z.object({
+    intensity: z.number(), // IRE value 0-100
+    colorTemperature: z.number(),
+    characteristics: z.string()
+  }),
+  ratios: z.object({
+    keyToFill: z.string(), // e.g., "4:1"
+    keyToBackground: z.string()
+  }),
+  colorBalance: z.object({
+    overall: z.string(), // warm/cool/neutral/mixed
+    description: z.string()
+  }),
   mood: z.string(),
+  cinematicReferences: z.array(z.string()),
   suggestions: z.array(z.string())
 });
 
