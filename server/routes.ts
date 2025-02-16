@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer } from "http";
 import { storage } from "./storage";
 import { analyzeLighting } from "./openai";
-import { insertAnalysisSchema, analysisResponseSchema } from "@shared/schema";
+import { insertAnalysisSchema, analysisResponseSchema, analysisPreferencesSchema } from "@shared/schema";
 import { ZodError } from "zod";
 
 export async function registerRoutes(app: Express) {
@@ -10,20 +10,25 @@ export async function registerRoutes(app: Express) {
 
   app.post("/api/analyze", async (req, res) => {
     try {
-      const { imageBase64, referenceImageUrl } = req.body;
+      const { imageBase64, referenceImageUrl, preferences } = req.body;
 
       if (!imageBase64) {
         return res.status(400).json({ message: "Image is required" });
       }
 
-      const analysis = await analyzeLighting(imageBase64);
+      if (preferences) {
+        analysisPreferencesSchema.parse(preferences);
+      }
+
+      const analysis = await analyzeLighting(imageBase64, preferences);
       const validatedAnalysis = analysisResponseSchema.parse(analysis);
 
       const result = await storage.createAnalysis({
         imageUrl: `data:image/jpeg;base64,${imageBase64}`,
         analysis: validatedAnalysis,
         referenceImageUrl,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        preferences: preferences || null
       });
 
       res.json(result);

@@ -2,16 +2,19 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { ImageUpload } from "@/components/image-upload";
 import { ReferenceGrid } from "@/components/reference-grid";
+import { AnalysisPreferences } from "@/components/analysis-preferences";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import type { AnalysisPreferences as AnalysisPreferencesType } from "@shared/schema";
 
 export default function Home() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [referenceImage, setReferenceImage] = useState<string | null>(null);
+  const [preferences, setPreferences] = useState<AnalysisPreferencesType | null>(null);
 
   const handleAnalyze = async () => {
     if (!selectedImage) {
@@ -26,7 +29,8 @@ export default function Home() {
     try {
       const response = await apiRequest("POST", "/api/analyze", {
         imageBase64: selectedImage,
-        referenceImageUrl: referenceImage
+        referenceImageUrl: referenceImage,
+        preferences
       });
       const result = await response.json() as { id: number };
       setLocation(`/analysis/${result.id}`);
@@ -49,38 +53,44 @@ export default function Home() {
           </p>
         </div>
 
-        <Tabs defaultValue="upload" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="upload">Upload Image</TabsTrigger>
-            <TabsTrigger value="reference">Reference Images</TabsTrigger>
-          </TabsList>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="space-y-6">
+            <Tabs defaultValue="upload" className="space-y-6">
+              <TabsList>
+                <TabsTrigger value="upload">Upload Image</TabsTrigger>
+                <TabsTrigger value="reference">Reference Images</TabsTrigger>
+              </TabsList>
 
-          <TabsContent value="upload" className="space-y-4">
-            <ImageUpload onImageSelect={setSelectedImage} />
-            {selectedImage && (
-              <div className="aspect-video relative rounded-lg overflow-hidden">
-                <img
-                  src={`data:image/jpeg;base64,${selectedImage}`}
-                  alt="Selected"
-                  className="object-cover w-full h-full"
-                />
-              </div>
-            )}
-          </TabsContent>
+              <TabsContent value="upload" className="space-y-4">
+                <ImageUpload onImageSelect={setSelectedImage} />
+                {selectedImage && (
+                  <div className="aspect-video relative rounded-lg overflow-hidden">
+                    <img
+                      src={`data:image/jpeg;base64,${selectedImage}`}
+                      alt="Selected"
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
+                )}
+              </TabsContent>
 
-          <TabsContent value="reference">
-            <ReferenceGrid onSelect={(url) => setReferenceImage(url)} />
-          </TabsContent>
-        </Tabs>
+              <TabsContent value="reference">
+                <ReferenceGrid onSelect={(url) => setReferenceImage(url)} />
+              </TabsContent>
+            </Tabs>
 
-        <div className="flex justify-end">
-          <Button
-            size="lg"
-            onClick={handleAnalyze}
-            disabled={!selectedImage}
-          >
-            Analyze Lighting
-          </Button>
+            <div className="flex justify-end">
+              <Button
+                size="lg"
+                onClick={handleAnalyze}
+                disabled={!selectedImage}
+              >
+                Analyze Lighting
+              </Button>
+            </div>
+          </div>
+
+          <AnalysisPreferences onPreferencesChange={setPreferences} />
         </div>
       </div>
     </div>

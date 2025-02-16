@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { type AnalysisResponse } from "@shared/schema";
+import { type AnalysisResponse, type AnalysisPreferences } from "@shared/schema";
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error("OPENAI_API_KEY is required");
@@ -8,13 +8,26 @@ if (!process.env.OPENAI_API_KEY) {
 // the newest OpenAI model is "gpt-4o" which was released May 13, 2024
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-export async function analyzeLighting(base64Image: string): Promise<AnalysisResponse> {
-  const response = await openai.chat.completions.create({
-    model: "gpt-4o",
-    messages: [
-      {
-        role: "system",
-        content: `You are a professional cinematographer analyzing lighting setups. Provide detailed analysis in the following JSON format:
+function generateSystemPrompt(preferences?: AnalysisPreferences): string {
+  let prompt = `You are a professional cinematographer analyzing lighting setups. `;
+
+  if (preferences?.focusAreas?.includes('technical')) {
+    prompt += `Focus on technical aspects like light placement, equipment choices, and exposure settings. `;
+  }
+  if (preferences?.focusAreas?.includes('emotional')) {
+    prompt += `Analyze the emotional impact of the lighting and how it supports the scene's mood. `;
+  }
+  if (preferences?.focusAreas?.includes('style')) {
+    prompt += `Compare the lighting style to established cinematographic techniques. `;
+  }
+  if (preferences?.genre) {
+    prompt += `Analyze this from a ${preferences.genre.replace('_', ' ')} perspective. `;
+  }
+  if (preferences?.style) {
+    prompt += `Consider how this matches or differs from ${preferences.style.replace('_', ' ')} lighting approaches. `;
+  }
+
+  prompt += `Provide detailed analysis in the following JSON format:
 {
   "keyLight": {
     "position": "string describing the position (e.g., 'upper left', 'center right')",
@@ -29,7 +42,21 @@ export async function analyzeLighting(base64Image: string): Promise<AnalysisResp
   "contrastRatio": number representing the contrast ratio,
   "mood": "string describing the overall mood",
   "suggestions": ["array of strings with improvement suggestions"]
-}`
+}`;
+
+  return prompt;
+}
+
+export async function analyzeLighting(
+  base64Image: string,
+  preferences?: AnalysisPreferences
+): Promise<AnalysisResponse> {
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o",
+    messages: [
+      {
+        role: "system",
+        content: generateSystemPrompt(preferences)
       },
       {
         role: "user",
