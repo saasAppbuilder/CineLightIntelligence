@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { ImageUpload } from "@/components/image-upload";
 import { ReferenceGrid } from "@/components/reference-grid";
+import { SampleAnalysis } from "@/components/sample-analysis";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
@@ -86,13 +87,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* To be replaced with sample analysis showcase */}
-          <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
-            <h2 className="text-lg font-semibold mb-4">Sample Analysis Preview</h2>
-            <p className="text-muted-foreground">
-              Please provide a sample analysis screenshot and I'll create a showcase component to demonstrate the tool's capabilities.
-            </p>
-          </div>
+          <SampleAnalysis />
         </div>
       </div>
     </div>
