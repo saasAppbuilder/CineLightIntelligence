@@ -14,14 +14,29 @@ export async function analyzeLighting(base64Image: string): Promise<AnalysisResp
     messages: [
       {
         role: "system",
-        content: "You are a professional cinematographer analyzing lighting setups. Provide detailed analysis focusing on key light, fill light, background lighting, and contrast ratios. Format response as JSON with suggestions for improvement."
+        content: `You are a professional cinematographer analyzing lighting setups. Provide detailed analysis in the following JSON format:
+{
+  "keyLight": {
+    "position": "string describing the position (e.g., 'upper left', 'center right')",
+    "intensity": number from 1-10,
+    "color": "string describing color temperature or color"
+  },
+  "fillLight": {
+    "presence": boolean,
+    "intensity": number from 1-10
+  },
+  "backgroundColor": "string describing the background color or tone",
+  "contrastRatio": number representing the contrast ratio,
+  "mood": "string describing the overall mood",
+  "suggestions": ["array of strings with improvement suggestions"]
+}`
       },
       {
         role: "user",
         content: [
           {
             type: "text",
-            text: "Analyze this image's lighting setup and provide details about: key light position and intensity, fill light presence and intensity, background lighting, contrast ratio, overall mood, and specific suggestions for improvement."
+            text: "Analyze this image's lighting setup focusing on: key light position and intensity, fill light presence and intensity, background lighting, contrast ratio, overall mood, and specific suggestions for improvement. Ensure the response matches the exact JSON format specified."
           },
           {
             type: "image_url",
